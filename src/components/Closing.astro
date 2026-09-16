@@ -1,0 +1,33 @@
+---
+import { recommendedPack, type Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const href = `/pedido?producto=${product.id}&pack=${recommendedPack(product).id}`;
+---
+
+<section class="section closing" aria-labelledby="cierre-titulo" data-closing>
+  <div class="container closing-inner">
+    <h2 class="h2" id="cierre-titulo">Que dejarte una reseña cueste lo mismo que acercar el móvil</h2>
+    <a class="btn-buy" href={href} data-order-link="closing">Pedir mi {product.data.unit.singular}</a>
+  </div>
+</section>
+
+<style>
+  .closing-inner {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+  }
+
+  .closing .h2 {
+    max-width: 22ch;
+  }
+
+  .closing .btn-buy {
+    min-width: min(100%, 18rem);
+  }
+</style>

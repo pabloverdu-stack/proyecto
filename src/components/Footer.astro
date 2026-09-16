@@ -1,0 +1,116 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  showProducts?: boolean;
+  cookieSettings?: boolean;
+}
+
+const { showProducts = false, cookieSettings = false } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <p class="brand">{site.name}</p>
+      <p class="muted">Tarjetas NFC para que tus clientes te dejen reseña en Google.</p>
+      <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+    </div>
+    <nav aria-label="Tienda">
+      <ul class="footer-links">
+        <li><a href="/">Tarjeta NFC de reseñas</a></li>
+        {showProducts && <li><a href="/productos">Productos</a></li>}
+        <li><a href="/#preguntas">Preguntas frecuentes</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Legal">
+      <ul class="footer-links">
+        <li><a href="/aviso-legal">Aviso legal</a></li>
+        <li><a href="/privacidad">Privacidad</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+        <li><a href="/condiciones">Condiciones de compra</a></li>
+        {
+          cookieSettings && (
+            <li>
+              <button type="button" class="footer-button" data-open-cookie-settings hidden>
+                Configurar cookies
+              </button>
+            </li>
+          )
+        }
+      </ul>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <p class="small muted">{site.name} {site.disclaimer}</p>
+    <p class="small muted">© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: var(--space-12) var(--space-8);
+    border-top: var(--border-hair);
+    font-size: var(--text-sm);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .footer-brand {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 22rem;
+  }
+
+  .brand {
+    font-size: 1.125rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .footer-links {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-links a,
+  .footer-button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+  }
+
+  .footer-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  .footer-bottom {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: var(--border-hair);
+  }
+
+  @media (min-width: 760px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+
+    .footer-bottom {
+      grid-template-columns: 1fr auto;
+    }
+  }
+</style>

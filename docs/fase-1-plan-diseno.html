@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan de diseño, Fase 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{--papel:#F4F5F2;--mostrador:#E7E9E4;--tinta:#17191A;--grafito:#5B6166;--linea:#CFD3CD;--verde:#0A6B52;--f:'Chivo',system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box}
+html{background:var(--papel);color:var(--tinta);font-family:var(--f);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+body{margin:0;padding-inline:20px;background:var(--papel)}
+main{max-width:1080px;margin:0 auto;padding-block:48px 96px}
+h1,h2,h3{line-height:1.12;letter-spacing:-.015em;margin:0}
+h1{font-size:clamp(2rem,1.4rem + 2.6vw,3.25rem);font-weight:650;max-width:20ch}
+h2{font-size:clamp(1.5rem,1.2rem + 1.4vw,2.25rem);font-weight:600;max-width:28ch}
+h3{font-size:1.2rem;font-weight:600;margin-top:32px}
+p{margin:.6rem 0 0;max-width:66ch}
+ul,ol{max-width:66ch;padding-left:1.2rem}
+li+li{margin-top:.35rem}
+a{color:inherit;text-underline-offset:3px}
+section{border-top:1px solid var(--linea);padding-top:56px;margin-top:64px}
+.meta,.nota{color:var(--grafito);font-size:.95rem}
+.lead{font-size:1.15rem;max-width:60ch}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:640px}
+th,td{text-align:left;vertical-align:top;padding:12px 18px 12px 0;border-bottom:1px solid var(--linea)}
+th{font-weight:600;color:var(--grafito)}
+.scroll{overflow-x:auto;padding-bottom:8px;margin-top:24px}
+.grid{display:grid;gap:28px;margin-top:28px}
+@media(min-width:780px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+.chip{display:inline-block;font-size:.8rem;font-weight:600;border:1px solid var(--tinta);border-radius:999px;padding:0 10px;vertical-align:middle}
+.decidir{list-style:none;padding:0;margin:28px 0 0;max-width:none;counter-reset:paso}
+.decidir li{display:grid;grid-template-columns:2.2rem 1fr;padding:14px 0;border-bottom:1px solid var(--linea);margin:0;counter-increment:paso}
+.decidir li::before{content:counter(paso);font-weight:600}
+/* Maquetas */
+.frames{display:flex;gap:32px;align-items:flex-start;padding:4px 2px 16px;margin-top:28px;overflow-x:auto}
+.frame-col{flex:0 0 auto}
+.frame-col>p{max-width:390px}
+.movil{position:relative;width:390px;height:844px;overflow:hidden;background:var(--papel);border:1px solid var(--grafito);border-radius:28px}
+.movil.auto{height:auto;padding-bottom:28px}
+.m-top{display:flex;justify-content:space-between;align-items:center;height:52px;padding:0 20px;border-bottom:1px solid var(--linea);font-size:15px}
+.logo{font-weight:700;letter-spacing:-.02em;font-size:18px}
+.escena{display:block;width:100%;height:220px}
+.m-body{padding:14px 20px 0}
+.m-h1{font-size:28px;font-weight:650;line-height:1.1;letter-spacing:-.02em;max-width:none}
+.m-sub{font-size:16px;line-height:1.5;margin-top:8px}
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.pack{border:1px solid var(--grafito);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.35;background:#fff}
+.pack b{display:block;font-size:17px;font-weight:600}
+.pack small{display:block;color:var(--grafito);font-size:12px}
+.pack.on{border:2px solid var(--tinta);padding:7px 9px}
+.m-note,.m-ok{font-size:14px;color:var(--grafito);margin-top:8px}
+.m-ok{margin-top:8px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:52px;border-radius:10px;background:var(--verde);color:#fff;font:600 17px/1 var(--f);margin-top:12px}
+.pliegue{position:absolute;left:0;right:0;border-top:1px dashed var(--grafito);font-size:11px;line-height:1.4;color:var(--grafito);padding:2px 14px;background:rgba(244,245,242,.9)}
+/* Nombres */
+.nombres{list-style:none;padding:0;margin:28px 0 0;max-width:none}
+.nombres li{display:grid;gap:6px 32px;padding:24px 0;border-bottom:1px solid var(--linea);margin:0}
+@media(min-width:780px){.nombres li{grid-template-columns:260px 1fr}}
+.marca{font-size:2.1rem;font-weight:700;letter-spacing:-.03em;line-height:1}
+.dom{font-size:.9rem;color:var(--grafito);margin-top:8px}
+.nombres p{margin:0}
+.nombres p+p{margin-top:6px}
+/* Paleta y tipografía */
+.swatches{display:grid;gap:4px 28px;margin-top:28px}
+@media(min-width:780px){.swatches{grid-template-columns:repeat(3,1fr)}}
+.sw{padding:0 0 20px}
+.sw i{display:block;height:88px;border-radius:10px;border:1px solid var(--linea)}
+.sw strong{display:block;margin-top:10px}
+.sw span{display:block;font-size:.9rem;color:var(--grafito);line-height:1.45}
+.espec{margin-top:28px}
+.espec .row{display:grid;grid-template-columns:minmax(110px,150px) 1fr;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--linea)}
+.espec .row>span{font-size:.85rem;color:var(--grafito);line-height:1.4}
+/* Escritorio */
+.desk-wrap{overflow-x:auto;margin-top:28px;padding-bottom:8px}
+.desk{width:1440px;height:900px;zoom:.6;background:var(--papel);border:1px solid var(--grafito);border-radius:12px;overflow:hidden}
+.d-top{display:flex;justify-content:space-between;align-items:center;height:76px;padding:0 120px;border-bottom:1px solid var(--linea);font-size:17px}
+.d-top nav{display:flex;gap:36px}
+.d-hero{display:grid;grid-template-columns:680px 440px;gap:80px;padding:44px 120px 0}
+.d-escena{display:block;width:680px;height:453px;border-radius:14px}
+.thumbs{display:flex;gap:12px;margin-top:12px}
+.thumbs i{width:84px;height:64px;border-radius:8px;background:var(--mostrador);border:1px solid var(--linea)}
+.thumbs i:first-child{border:2px solid var(--tinta)}
+.d-h1{font-size:50px;font-weight:650;line-height:1.06;letter-spacing:-.025em;max-width:none}
+.d-sub{font-size:20px;line-height:1.5;margin-top:14px}
+.d-packs{margin-top:24px;display:grid;gap:10px}
+.d-pack{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--grafito);border-radius:10px;padding:14px 18px;font-size:17px;background:#fff}
+.d-pack.on{border:2px solid var(--tinta);padding:13px 17px}
+.d-pack small{color:var(--grafito);font-size:14px;margin-left:8px}
+.d-pack b{font-weight:600}
+.desk .btn{height:58px;font-size:19px;margin-top:18px}
+.d-note{font-size:15px;color:var(--grafito);margin-top:12px;line-height:1.5}
+/* Esquema de página completa */
+.esquema{list-style:none;padding:0;margin:12px 0 0;max-width:none}
+.esquema li{border:1px solid var(--grafito);border-radius:8px;padding:12px 14px;margin:0 0 8px;background:#fff}
+.esquema li strong{display:block}
+.esquema li span{display:block;font-size:.9rem;color:var(--grafito);line-height:1.45}
+.esquema li.compra{border:2px solid var(--verde)}
+/* Animación */
+.demo{max-width:600px;margin-top:28px;border-radius:14px;overflow:hidden}
+.demo svg{display:block;width:100%;height:auto}
+.tel{animation:acercar 6s ease-in-out infinite}
+.hoja{animation:hoja 6s ease-in-out infinite}
+.pulso{transform-box:fill-box;transform-origin:center;animation:pulso 6s ease-out infinite;opacity:0}
+@keyframes acercar{0%,18%{transform:translate(0,0)}34%,58%{transform:translate(150px,-18px)}76%,100%{transform:translate(0,0)}}
+@keyframes hoja{0%,20%{opacity:1;transform:translateY(0)}28%,78%{opacity:0;transform:translateY(24px)}90%,100%{opacity:1;transform:translateY(0)}}
+@keyframes pulso{0%,74%{opacity:0;transform:scale(1)}78%{opacity:.5;transform:scale(1)}92%,100%{opacity:0;transform:scale(2.4)}}
+@media(prefers-reduced-motion:reduce){.tel,.hoja,.pulso{animation:none}}
+/* Pedido y productos */
+.progreso{display:flex;gap:6px;margin-top:4px}
+.progreso i{flex:1;height:4px;border-radius:2px;background:var(--linea)}
+.progreso i.hecho{background:var(--tinta)}
+.campo{margin-top:14px;border:1px solid var(--grafito);border-radius:10px;padding:14px;font-size:15px;color:var(--grafito);background:#fff}
+.resultado{margin-top:12px;border:2px solid var(--tinta);border-radius:10px;padding:14px;background:#fff;font-size:15px;line-height:1.45}
+.resultado a{font-weight:600}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.tile i{display:block;aspect-ratio:4/3;border-radius:10px;background:var(--mostrador);border:1px solid var(--linea)}
+.tile strong{display:block;margin-top:10px;font-size:15px;line-height:1.3}
+.tile span{font-size:15px;color:var(--grafito)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="escena" viewBox="0 0 600 400">
+    <rect width="600" height="400" fill="#E7E9E4"/>
+    <g transform="rotate(-8 200 231)">
+      <rect x="74" y="158" width="257" height="162" rx="11" fill="#17191A" opacity=".07"/>
+      <rect x="70" y="150" width="257" height="162" rx="11" fill="#fff"/>
+      <text x="92" y="184" font-family="Chivo,sans-serif" font-weight="700" font-size="16" fill="#17191A">marca</text>
+      <circle cx="300" cy="231" r="20" fill="none" stroke="#17191A" stroke-width="2"/>
+      <circle cx="300" cy="231" r="5" fill="#17191A"/>
+      <text x="92" y="272" font-family="Chivo,sans-serif" font-size="11" fill="#5B6166">Acerca el móvil</text>
+      <text x="92" y="290" font-family="Chivo,sans-serif" font-size="11" fill="#17191A">Déjanos tu reseña en Google</text>
+    </g>
+    <g transform="translate(22 0) rotate(8 345 205)">
+      <rect x="268" y="52" width="170" height="330" rx="28" fill="#17191A" opacity=".12"/>
+      <rect x="260" y="40" width="170" height="330" rx="28" fill="#17191A"/>
+      <rect x="268" y="48" width="154" height="314" rx="20" fill="#fff"/>
+      <rect x="325" y="56" width="40" height="6" rx="3" fill="#17191A"/>
+      <text x="282" y="98" font-family="Chivo,sans-serif" font-weight="700" font-size="15" fill="#17191A">Tu negocio</text>
+      <rect x="282" y="108" width="90" height="6" rx="3" fill="#CFD3CD"/>
+      <line x1="268" y1="128" x2="422" y2="128" stroke="#E7E9E4" stroke-width="2"/>
+      <text x="282" y="158" font-family="Chivo,sans-serif" font-weight="600" font-size="12" fill="#17191A">Escribe tu reseña</text>
+      <rect x="282" y="170" width="126" height="86" rx="8" fill="#fff" stroke="#CFD3CD" stroke-width="1.5"/>
+      <rect x="292" y="184" width="96" height="6" rx="3" fill="#E7E9E4"/>
+      <rect x="292" y="198" width="106" height="6" rx="3" fill="#E7E9E4"/>
+      <rect x="292" y="212" width="70" height="6" rx="3" fill="#E7E9E4"/>
+      <rect x="282" y="272" width="126" height="32" rx="8" fill="#17191A"/>
+      <text x="345" y="293" text-anchor="middle" font-family="Chivo,sans-serif" font-weight="600" font-size="12" fill="#fff">Publicar</text>
+      <rect x="315" y="346" width="60" height="4" rx="2" fill="#CFD3CD"/>
+    </g>
+  </symbol>
+</svg>
+
+<main>
+  <p class="meta">Fase 1 de 5. Documento para aprobar, 15/09/2026</p>
+  <h1>Plan de diseño de la tienda de tarjetas NFC</h1>
+  <p class="lead">Nombre, titular, colores, tipografía, estructura y cómo se verá en móvil y en escritorio. Todavía no hay nada programado: esto es lo que construiré en la Fase 2 si das el visto bueno.</p>
+  <p class="meta">Datos confirmados: tarjeta y soporte de mostrador; 30 € la unidad con IVA incluido; pack de 2 a 26 € cada una y pack de 5 a 22 € cada una; envío gratis a la península en 48 h.</p>
+
+  <ol class="decidir">
+    <li><span><strong>Nombre de marca.</strong> Elige uno de los cinco o pídeme otra tanda. <a href="#nombre">Ver nombres</a></span></li>
+    <li><span><strong>Titular.</strong> Elige una de las tres variantes. <a href="#titular">Ver titulares</a></span></li>
+    <li><span><strong>Colores y tipografía.</strong> Apruébalos o dime qué cambiarías. <a href="#paleta">Ver paleta</a></span></li>
+    <li><span><strong>Estructura y flujo de compra.</strong> Cómo se ordena la ficha y qué pasa al pulsar el botón. <a href="#estructura">Ver estructura</a></span></li>
+    <li><span><strong>Tres datos que faltan.</strong> Precio del soporte, plazo real con personalización y qué graba el proveedor. <a href="#pendiente">Ver datos</a></span></li>
+  </ol>
+
+  <section id="nombre">
+    <h2>Nombre de marca</h2>
+    <p>Cinco propuestas sin «tap», que ya usan Justap, Tapstar, TapReview y MontesTAP, y sin «google», que es marca registrada. He comprobado los dominios hoy; aun así, confírmalos al comprar y busca el nombre en la OEPM antes de decidir.</p>
+    <ul class="nombres">
+      <li>
+        <div><div class="marca">Ficha Viva</div><div class="dom">fichaviva.es libre; .com ocupado</div></div>
+        <div>
+          <p><span class="chip">Mi recomendación</span></p>
+          <p>Los dueños llaman «ficha» a su perfil de Google, y una ficha también es una pieza física, como la tarjeta. «Viva» resume lo que ganan: reseñas recientes. Encaja con la carta o la lista de precios del futuro, que también se actualizan sin reimprimir.</p>
+          <p class="nota">Riesgo: «tener ficha» también significa tener antecedentes, aunque en este contexto no se lee así.</p>
+        </div>
+      </li>
+      <li>
+        <div><div class="marca">Arrima</div><div class="dom">arrima.es libre; .com ocupado</div></div>
+        <div>
+          <p>«Arrima el móvil»: el gesto exacto, dicho como se dice en la calle. Corto, con gracia y de barrio. Vale para cualquier producto NFC.</p>
+          <p class="nota">Riesgo: es coloquial y a algunos negocios les puede sonar poco serio.</p>
+        </div>
+      </li>
+      <li>
+        <div><div class="marca">Un Palmo</div><div class="dom">unpalmo.es y unpalmo.com libres</div></div>
+        <div>
+          <p>La distancia a la que funciona: a un palmo. Neutro, fácil de recordar y con los dos dominios libres.</p>
+          <p class="nota">Riesgo: no dice nada de reseñas, así que la web tiene que explicarlo todo.</p>
+        </div>
+      </li>
+      <li>
+        <div><div class="marca">Voz Vecina</div><div class="dom">vozvecina.es y vozvecina.com libres</div></div>
+        <div>
+          <p>Las reseñas son lo que el barrio cuenta de tu negocio. Cálido y local.</p>
+          <p class="nota">Riesgo: muy ligado a reseñas; encaja peor con la carta digital.</p>
+        </div>
+      </li>
+      <li>
+        <div><div class="marca">Dice la Gente</div><div class="dom">dicelagente.es y dicelagente.com libres</div></div>
+        <div>
+          <p>Lo que la gente dice de ti, ahora visible en Google. El dueño lo entiende al instante.</p>
+          <p class="nota">Riesgo: es largo y solo tiene sentido para reseñas.</p>
+        </div>
+      </li>
+    </ul>
+    <p class="nota">Cuando elijas, compra el dominio cuanto antes y activa la renovación automática: irá grabado en todas las tarjetas.</p>
+  </section>
+
+  <section id="titular">
+    <h2>Tres titulares para el primer pantallazo</h2>
+    <p>Cada variante está en un móvil de 390 × 844 con el diseño propuesto. La línea discontinua marca lo que se ve con las barras de Safari a la vista (unos 664 px): producto, precio y botón tienen que quedar por encima. El nombre de la marca es provisional.</p>
+    <div class="frames">
+      <div class="frame-col">
+        <div class="movil">
+          <div class="m-top"><span class="logo">Ficha Viva</span><span>Productos</span></div>
+          <svg class="escena" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un móvil tocando la tarjeta y la ventana de reseña abierta"><use href="#escena"/></svg>
+          <div class="m-body">
+            <h3 class="m-h1">Tarjeta NFC para conseguir más reseñas en Google</h3>
+            <p class="m-sub">Tus clientes acercan el móvil y se abre la reseña de tu negocio. Sin apps.</p>
+            <div class="packs" style="margin-top:18px">
+              <span class="pack">1 tarjeta<b>30 €</b></span>
+              <span class="pack on" style="position:relative"><em style="position:absolute;top:-10px;left:8px;font-style:normal;font-size:11px;font-weight:600;background:#17191A;color:#fff;border-radius:999px;padding:0 7px;line-height:18px">Recomendado</em>2 tarjetas<b>52 €</b><small>26 € cada una</small></span>
+              <span class="pack">5 tarjetas<b>110 €</b><small>22 € cada una</small></span>
+            </div>
+            <p class="m-note">IVA incluido. Envío gratis a la península en 48 h.</p>
+            <span class="btn">Pedir mi tarjeta</span>
+            <p class="m-ok">Funciona con iPhone y Android. Llega lista para usar.</p>
+          </div>
+          <div class="pliegue" style="top:664px">≈ 664 px: Safari con barras visibles</div>
+        </div>
+        <h3>A. Directa al producto</h3>
+        <p>Lleva la búsqueda exacta en el titular, lo que ayuda en Google y en Google Ads, y se entiende qué es en dos segundos.</p>
+        <p class="nota">Riesgo: suena más a catálogo que a solución.</p>
+      </div>
+
+      <div class="frame-col">
+        <div class="movil">
+          <div class="m-top"><span class="logo">Ficha Viva</span><span>Productos</span></div>
+          <svg class="escena" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un móvil tocando la tarjeta y la ventana de reseña abierta"><use href="#escena"/></svg>
+          <div class="m-body">
+            <h3 class="m-h1">Más reseñas en Google de los clientes que ya tienes</h3>
+            <p class="m-sub">Acercan el móvil a esta tarjeta NFC y se abre la ventana para dejarte su reseña. Sin apps.</p>
+            <div class="packs" style="margin-top:18px">
+              <span class="pack">1 tarjeta<b>30 €</b></span>
+              <span class="pack on" style="position:relative"><em style="position:absolute;top:-10px;left:8px;font-style:normal;font-size:11px;font-weight:600;background:#17191A;color:#fff;border-radius:999px;padding:0 7px;line-height:18px">Recomendado</em>2 tarjetas<b>52 €</b><small>26 € cada una</small></span>
+              <span class="pack">5 tarjetas<b>110 €</b><small>22 € cada una</small></span>
+            </div>
+            <p class="m-note">IVA incluido. Envío gratis a la península en 48 h.</p>
+            <span class="btn">Pedir mi tarjeta</span>
+            <p class="m-ok">Funciona con iPhone y Android. Llega lista para usar.</p>
+          </div>
+          <div class="pliegue" style="top:664px">≈ 664 px: Safari con barras visibles</div>
+        </div>
+        <h3>B. Responde a la pregunta <span class="chip">Mi recomendación</span></h3>
+        <p>Continúa la conversación de ChatGPT («¿cómo consigo más reseñas?») y deja claro que son reseñas reales de tus propios clientes. «Tarjeta NFC» va en el subtítulo y en el título de la página, así que el SEO no se resiente.</p>
+        <p class="nota">Riesgo: el titular no nombra el producto; lo hacen la imagen y el subtítulo.</p>
+      </div>
+
+      <div class="frame-col">
+        <div class="movil">
+          <div class="m-top"><span class="logo">Ficha Viva</span><span>Productos</span></div>
+          <svg class="escena" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un móvil tocando la tarjeta y la ventana de reseña abierta"><use href="#escena"/></svg>
+          <div class="m-body">
+            <h3 class="m-h1">Reseñas en Google con solo acercar el móvil</h3>
+            <p class="m-sub">Una tarjeta NFC con el enlace de tu negocio. Sin apps y sin buscarte en Google.</p>
+            <div class="packs" style="margin-top:18px">
+              <span class="pack">1 tarjeta<b>30 €</b></span>
+              <span class="pack on" style="position:relative"><em style="position:absolute;top:-10px;left:8px;font-style:normal;font-size:11px;font-weight:600;background:#17191A;color:#fff;border-radius:999px;padding:0 7px;line-height:18px">Recomendado</em>2 tarjetas<b>52 €</b><small>26 € cada una</small></span>
+              <span class="pack">5 tarjetas<b>110 €</b><small>22 € cada una</small></span>
+            </div>
+            <p class="m-note">IVA incluido. Envío gratis a la península en 48 h.</p>
+            <span class="btn">Pedir mi tarjeta</span>
+            <p class="m-ok">Funciona con iPhone y Android. Llega lista para usar.</p>
+          </div>
+          <div class="pliegue" style="top:664px">≈ 664 px: Safari con barras visibles</div>
+        </div>
+        <h3>C. El gesto</h3>
+        <p>Explica en una frase cómo funciona y qué consigues, y va de la mano de la animación.</p>
+        <p class="nota">Riesgo: pone el foco en el cómo más que en lo que gana el dueño.</p>
+      </div>
+    </div>
+    <p class="nota">El pack de 2 aparece marcado porque encaja con la mayoría de negocios: una tarjeta para el mostrador y otra para llevar encima. Se cambia con un toque.</p>
+  </section>
+
+  <section id="paleta">
+    <h2>Colores</h2>
+    <p>Tinta sobre papel y un único color, el verde, reservado para pedir. Todos los textos cumplen el contraste AA; los valores de contraste están medidos.</p>
+    <div class="swatches">
+      <div class="sw"><i style="background:#F4F5F2"></i><strong>Papel, #F4F5F2</strong><span>Fondo de toda la web. Blanco neutro: ni crema ni gris frío.</span></div>
+      <div class="sw"><i style="background:#E7E9E4"></i><strong>Mostrador, #E7E9E4</strong><span>La superficie donde apoya la tarjeta en la escena. Recuerda la encimera de un mostrador.</span></div>
+      <div class="sw"><i style="background:#17191A"></i><strong>Tinta, #17191A</strong><span>Textos, impresión de la tarjeta y móvil. 16,1:1 sobre Papel.</span></div>
+      <div class="sw"><i style="background:#5B6166"></i><strong>Grafito, #5B6166</strong><span>Textos secundarios y bordes de campos y opciones. 5,7:1 sobre Papel.</span></div>
+      <div class="sw"><i style="background:#CFD3CD"></i><strong>Línea, #CFD3CD</strong><span>Solo separadores decorativos. Nunca bordes de campos, porque no llega al contraste exigido a los controles.</span></div>
+      <div class="sw"><i style="background:#0A6B52"></i><strong>Verde pedido, #0A6B52</strong><span>Solo botones y barra de compra. Texto blanco a 6,5:1. Si algo es verde, sirve para pedir.</span></div>
+    </div>
+    <p class="nota">Aparte de la paleta, los mensajes de error de los formularios usan #A1260D (6,9:1). El verde es oscuro y azulado, muy distinto del verde de Google (#34A853).</p>
+  </section>
+
+  <section id="tipografia">
+    <h2>Tipografía</h2>
+    <p>Una sola familia: <strong>Chivo</strong>, de la fundición Omnibus-Type. Robusta y directa, con carácter en titulares grandes, y no es de las fuentes que se ven en todas las plantillas. En la web real irá en un único archivo variable (pesos 400 a 700) alojado en nuestro servidor, sin pedir nada a Google Fonts.</p>
+    <div class="espec">
+      <div class="row"><span>Titular<br>28 px móvil, 50 px escritorio, peso 650</span><div style="font-size:clamp(28px,4vw,50px);font-weight:650;line-height:1.1;letter-spacing:-.02em">Más reseñas en Google</div></div>
+      <div class="row"><span>Título de sección<br>24 px y 36 px, peso 600</span><div style="font-size:clamp(24px,3vw,36px);font-weight:600;line-height:1.15;letter-spacing:-.015em">Cómo funciona</div></div>
+      <div class="row"><span>Subtítulo<br>16 px y 20 px, peso 400</span><div style="font-size:clamp(16px,1.6vw,20px);line-height:1.5">Acercan el móvil a la tarjeta y se abre la reseña.</div></div>
+      <div class="row"><span>Texto<br>16 px y 17 px, peso 400</span><div style="font-size:17px;line-height:1.6">La programamos con el enlace de tu negocio y te llega lista para usar.</div></div>
+      <div class="row"><span>Precio<br>17 px, peso 600, cifras tabulares</span><div style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">52 € <span style="font-weight:400;color:#5B6166;font-size:15px">26 € cada una</span></div></div>
+      <div class="row"><span>Letra pequeña<br>14 px, peso 400</span><div style="font-size:14px;color:#5B6166">IVA incluido. Envío gratis a la península en 48 h.</div></div>
+      <div class="row"><span>Botón<br>17 px y 19 px, peso 600</span><div><span class="btn" style="max-width:300px;margin:0">Pedir mi tarjeta</span></div></div>
+    </div>
+    <p class="nota">Regla nacida de las maquetas: en móvil, el subtítulo del primer pantallazo no puede pasar de dos líneas. Con tres, el botón cae por debajo de lo visible.</p>
+  </section>
+
+  <section id="estructura">
+    <h2>Estructura de la ficha</h2>
+    <p>La portada es la ficha de la tarjeta, al estilo Justap: abres la web y ya estás comprando. Todo alineado a la izquierda. Escritorio en rejilla de 12 columnas con un ancho máximo de 1200 px; móvil en una columna con 20 px de margen.</p>
+
+    <h3>Escritorio, primer pantallazo (1440 × 900, al 60 %)</h3>
+    <div class="desk-wrap"><div class="desk">
+      <div class="d-top"><span class="logo" style="font-size:24px">Ficha Viva</span><nav><span>Cómo funciona</span><span>Preguntas</span><span>Productos</span></nav></div>
+      <div class="d-hero" style="grid-template-columns:640px 480px">
+        <div>
+          <svg class="d-escena" style="width:640px;height:427px" viewBox="0 0 600 400" role="img" aria-label="Un móvil tocando la tarjeta y la ventana de reseña abierta"><use href="#escena"/></svg>
+          <div class="thumbs"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div>
+          <div class="d-h1" style="font-size:46px">Más reseñas en Google de los clientes que ya tienes</div>
+          <p class="d-sub">Acercan el móvil a esta tarjeta NFC y se abre la ventana para dejarte su reseña. Sin apps.</p>
+          <div class="d-packs">
+            <div class="d-pack"><span>1 tarjeta</span><b>30 €</b></div>
+            <div class="d-pack on"><span>2 tarjetas <small>Recomendado</small></span><b>52 € <small>26 € cada una</small></b></div>
+            <div class="d-pack"><span>5 tarjetas</span><b>110 € <small>22 € cada una</small></b></div>
+          </div>
+          <span class="btn">Pedir mi tarjeta</span>
+          <p class="d-note">IVA incluido. Envío gratis a la península en 48 h.<br>Funciona con iPhone y Android. Llega lista para usar.</p>
+          <p class="d-note"><u>¿La quieres para el mostrador? Mira el soporte</u></p>
+        </div>
+      </div>
+    </div></div>
+    <p class="nota">Las miniaturas bajo la escena serán las fotos reales: cara y dorso de la tarjeta, el soporte y la tarjeta en un negocio.</p>
+
+    <h3>Página completa, de arriba abajo</h3>
+    <ol class="esquema">
+      <li><strong>Cabecera</strong><span>Logo y «Productos». En escritorio, también «Cómo funciona» y «Preguntas». El botón de la cabecera solo aparece cuando la zona de compra sale de la pantalla.</span></li>
+      <li class="compra"><strong>Zona de compra</strong><span>Escena animada y fotos, titular, subtítulo, 3 packs, botón, IVA y envío, compatibilidad. Móvil: una columna. Escritorio: galería a la izquierda y compra a la derecha.</span></li>
+      <li><strong>Cómo funciona</strong><span>Tres pasos reales: acercan el móvil, se abre la reseña de tu negocio y la publican. Debajo, en una línea: tú eliges tu negocio, la programamos y te llega en 48 h.</span></li>
+      <li><strong>Por qué importa</strong><span>Más reseñas recientes, mejor presencia en Google Maps, más confianza y más clientes. En palabras del dueño y sin cifras inventadas.</span></li>
+      <li><strong>Dónde se usa</strong><span>Junto a la cuenta en un restaurante, en el mostrador de una peluquería, en la recepción de una clínica y al terminar un servicio a domicilio.</span></li>
+      <li><strong>Qué incluye</strong><span>Dibujo técnico de la tarjeta (85 × 54 mm, cara y dorso con el QR) y la lista: chip NFC, QR de respaldo, programada y bloqueada, sin batería, sin cuotas y cambio de enlace gratis.</span></li>
+      <li><strong>Soporte de mostrador</strong><span>Foto, nombre, precio y enlace a su ficha.</span></li>
+      <li><strong>Preguntas frecuentes</strong><span>Desplegables que funcionan sin JavaScript. Además de las del documento: «¿Os tengo que dar la contraseña de Google?» y «¿Puedo pedir tarjetas para varios negocios?».</span></li>
+      <li><strong>Cierre</strong><span>Una frase y el botón.</span></li>
+      <li><strong>Pie</strong><span>Legales, contacto y aviso de que no estamos afiliados a Google.</span></li>
+      <li class="compra"><strong>Barra fija en móvil</strong><span>Aparece al salir de la zona de compra: pack elegido, precio y botón.</span></li>
+    </ol>
+
+    <h3 id="flujo">Qué pasa al pulsar «Pedir mi tarjeta»</h3>
+    <p>Vas a <code>/pedido</code> con el pack ya elegido. Solo queda decir de qué negocio es y pagar en Stripe. Uso una página aparte, y no una ventana encima de la ficha, por tres motivos: en móvil el teclado y el buscador funcionan mejor, el botón «atrás» se comporta como esperas y la ficha no tiene que cargar el buscador de Google.</p>
+    <div class="frames">
+      <div class="frame-col">
+        <div class="movil auto">
+          <div class="m-top"><span class="logo">Ficha Viva</span><span>Volver</span></div>
+          <div class="m-body">
+            <p class="m-note" style="margin-top:4px">Paso 2 de 3</p>
+            <div class="progreso"><i class="hecho"></i><i class="hecho"></i><i></i></div>
+            <h3 class="m-h1" style="font-size:24px;margin-top:18px">¿De qué negocio son las tarjetas?</h3>
+            <div class="campo">Nombre del negocio y ciudad</div>
+            <div class="resultado"><strong>Peluquería Ejemplo</strong><br><span style="color:#5B6166">Calle Mayor 12, Valencia</span><br><u style="font-weight:600">Probar enlace</u></div>
+            <p class="m-note"><u>¿No aparece? Pega el enlace de tu ficha de Google</u></p>
+            <p class="m-note">2 tarjetas, 52 €. <u>Cambiar</u></p>
+            <span class="btn">Pedir mis 2 tarjetas</span>
+            <p class="m-ok">Pagarás en Stripe con tarjeta, Apple Pay o Google Pay.</p>
+          </div>
+        </div>
+        <p class="nota">«Probar enlace» abre la ventana real de reseña para que compruebes que es tu negocio antes de pagar.</p>
+      </div>
+      <div class="frame-col">
+        <div class="movil auto">
+          <div class="m-top"><span class="logo">Ficha Viva</span><span>Productos</span></div>
+          <div class="m-body">
+            <h3 class="m-h1" style="font-size:26px;margin-top:4px">Productos</h3>
+            <div class="tiles">
+              <div class="tile"><svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;aspect-ratio:4/3;border-radius:10px" role="img" aria-label="Tarjeta NFC"><use href="#escena"/></svg><strong>Tarjeta NFC de reseñas</strong><span>30 €</span></div>
+              <div class="tile"><i></i><strong>Soporte de mostrador NFC</strong><span>Precio pendiente</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="nota">La página «Productos», como la de Justap: foto, nombre y precio, sin nada más.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="animacion">
+    <h2>El único momento con movimiento</h2>
+    <p>La escena de la tarjeta es el elemento memorable de la web y lo único que se mueve. Esta demo es una aproximación hecha solo con CSS y se repite para que la veas; en la web se reproducirá una vez.</p>
+    <div class="demo">
+      <svg viewBox="0 0 600 400" role="img" aria-label="Animación: el móvil se aparta, vuelve a acercarse a la tarjeta y se abre la ventana de reseña">
+        <rect width="600" height="400" fill="#E7E9E4"/>
+        <g transform="rotate(-8 200 231)">
+          <rect x="74" y="158" width="257" height="162" rx="11" fill="#17191A" opacity=".07"/>
+          <rect x="70" y="150" width="257" height="162" rx="11" fill="#fff"/>
+          <text x="92" y="184" font-family="Chivo,sans-serif" font-weight="700" font-size="16" fill="#17191A">marca</text>
+          <circle cx="300" cy="231" r="20" fill="none" stroke="#17191A" stroke-width="2"/>
+          <circle cx="300" cy="231" r="5" fill="#17191A"/>
+          <text x="92" y="272" font-family="Chivo,sans-serif" font-size="11" fill="#5B6166">Acerca el móvil</text>
+          <text x="92" y="290" font-family="Chivo,sans-serif" font-size="11" fill="#17191A">Déjanos tu reseña en Google</text>
+        </g>
+        <g class="tel">
+          <g transform="translate(22 0) rotate(8 345 205)">
+            <rect x="268" y="52" width="170" height="330" rx="28" fill="#17191A" opacity=".12"/>
+            <rect x="260" y="40" width="170" height="330" rx="28" fill="#17191A"/>
+            <rect x="268" y="48" width="154" height="314" rx="20" fill="#fff"/>
+            <rect x="325" y="56" width="40" height="6" rx="3" fill="#17191A"/>
+            <g class="hoja">
+              <text x="282" y="98" font-family="Chivo,sans-serif" font-weight="700" font-size="15" fill="#17191A">Tu negocio</text>
+              <rect x="282" y="108" width="90" height="6" rx="3" fill="#CFD3CD"/>
+              <line x1="268" y1="128" x2="422" y2="128" stroke="#E7E9E4" stroke-width="2"/>
+              <text x="282" y="158" font-family="Chivo,sans-serif" font-weight="600" font-size="12" fill="#17191A">Escribe tu reseña</text>
+              <rect x="282" y="170" width="126" height="86" rx="8" fill="#fff" stroke="#CFD3CD" stroke-width="1.5"/>
+              <rect x="292" y="184" width="96" height="6" rx="3" fill="#E7E9E4"/>
+              <rect x="292" y="198" width="106" height="6" rx="3" fill="#E7E9E4"/>
+              <rect x="292" y="212" width="70" height="6" rx="3" fill="#E7E9E4"/>
+              <rect x="282" y="272" width="126" height="32" rx="8" fill="#17191A"/>
+              <text x="345" y="293" text-anchor="middle" font-family="Chivo,sans-serif" font-weight="600" font-size="12" fill="#fff">Publicar</text>
+            </g>
+            <rect x="315" y="346" width="60" height="4" rx="2" fill="#CFD3CD"/>
+          </g>
+        </g>
+        <g transform="rotate(-8 200 231)"><circle class="pulso" cx="300" cy="231" r="20" fill="none" stroke="#17191A" stroke-width="2"/></g>
+      </svg>
+    </div>
+    <ol>
+      <li>Al cargar se ve el resultado: el móvil sobre la tarjeta con la reseña abierta. Es lo que Google mide como carga principal (LCP) y lo que verá quien tenga activado «reducir movimiento».</li>
+      <li>El móvil se aparta y deja ver la zona de acercar de la tarjeta.</li>
+      <li>Vuelve, toca la tarjeta y aparece un pulso breve.</li>
+      <li>Sube la ventana de reseña con el nombre del negocio. En total, unos 3,5 segundos.</li>
+    </ol>
+    <p class="nota">En la web real la animación irá con GSAP, cargado cuando la página ya es visible, para que no afecte a la velocidad. Sin logo de Google ni estrellas en la pantalla del móvil.</p>
+  </section>
+
+  <section id="principios">
+    <h2>Tres principios que hacen única esta web</h2>
+    <div class="grid g3">
+      <div><h3 style="margin-top:0">Un objeto y un gesto</h3><p>La tarjeta y el móvil acercándose son la única imagen hasta que haya fotos reales. Nada de iconos decorativos, ilustraciones de relleno ni fondos: lo que no explica el producto, no está.</p></div>
+      <div><h3 style="margin-top:0">El verde solo sirve para pedir</h3><p>Toda la web es tinta sobre papel. El único color aparece en los botones de compra, así que en cualquier pantalla se ve al instante dónde se pide.</p></div>
+      <div><h3 style="margin-top:0">Datos antes que adjetivos</h3><p>Precio con IVA, 48 h, península, iPhone y Android, qué incluye: siempre concreto y siempre cerca del botón. Nada de «la mejor» ni de cifras que no podamos demostrar.</p></div>
+    </div>
+  </section>
+
+  <section id="revision">
+    <h2>Revisión contra los patrones a evitar</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Patrón de tu documento</th><th>¿Coincide?</th><th>Qué he hecho</th></tr></thead>
+      <tbody>
+        <tr><td>Fondo crema, serif de alto contraste y acento terracota</td><td>No</td><td>Papel neutro, una sola familia sin serifa y un verde oscuro.</td></tr>
+        <tr><td>Fondo casi negro con un acento verde ácido o bermellón</td><td>No</td><td>Fondo claro y un verde oscuro, lejos del ácido.</td></tr>
+        <tr><td>Tarjetas redondeadas idénticas con sombra y degradados</td><td>No</td><td>Las secciones se separan con espacio y líneas finas. Los packs son opciones de formulario con borde, sin sombra ni degradado. Solo la tarjeta y el móvil tienen sombra, porque son objetos físicos.</td></tr>
+        <tr><td>Etiquetas en mayúsculas encima de cada título</td><td>No</td><td>Ningún título lleva etiqueta encima.</td></tr>
+        <tr><td>Una palabra del titular destacada</td><td>No</td><td>Titulares en un solo color y un solo peso.</td></tr>
+        <tr><td>Flechas en los botones y separadores con punto medio</td><td>No</td><td>Botones solo con texto; puntos y comas en lugar de «·».</td></tr>
+        <tr><td>Numeración 01/02/03 sin secuencia real</td><td>Solo con secuencia</td><td>«Cómo funciona» y los pasos del pedido son secuencias reales, con cifras normales.</td></tr>
+        <tr><td>Animación de entrada en cada sección y hover en cada tarjeta</td><td>No</td><td>Una única animación. El hover solo está en lo que se puede pulsar.</td></tr>
+        <tr><td>Tipografías por defecto</td><td>No</td><td>Chivo, que no está en la lista ni es habitual en plantillas.</td></tr>
+        <tr><td>Estrellas amarillas, logo o colores de Google</td><td>No</td><td>La pantalla del móvil dibuja la reseña en grises. Tampoco uso el símbolo de pago sin contacto ni el logotipo oficial de NFC, que son marcas registradas: la zona de acercar es un círculo propio.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Qué cambié al revisar</h3>
+    <ul>
+      <li><strong>Quité las estrellas de la pantalla del móvil.</strong> La ventana real de Google las tiene, pero eran justo el recurso a evitar.</li>
+      <li><strong>Descarté un rojo lacre como color de compra.</strong> Recordaba al rojo de Nothing y al de Google, y chocaba con el color de los errores.</li>
+      <li><strong>Descarté una tipografía monoespaciada para los precios,</strong> con aire de ticket de caja. Añadía un archivo más y, junto al color único, sonaba a web de herramientas técnicas.</li>
+      <li><strong>Acorté los subtítulos A y C.</strong> Con tres líneas, el botón quedaba por debajo de lo visible en móvil.</li>
+    </ul>
+  </section>
+
+  <section id="cambios">
+    <h2>Cambios respecto a tu documento</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Tu documento</th><th>Cambio</th><th>Motivo</th></tr></thead>
+      <tbody>
+        <tr><td>Sección «Precios» en quinto lugar</td><td>Los packs suben a la zona de compra</td><td>La ficha estilo Justap que pediste.</td></tr>
+        <tr><td>Configurador <code>/pedido</code> de 3 pasos</td><td>El pack se elige en la ficha; <code>/pedido</code> solo pide el negocio y lleva al pago</td><td>Un paso menos y la ficha sigue ligera.</td></tr>
+        <tr><td>Cabecera móvil con logo y botón</td><td>Logo y «Productos»; el botón va en la barra fija inferior</td><td>Evita dos botones principales a la vez y el pulgar llega mejor abajo. «Productos» hace falta porque ya hay dos.</td></tr>
+        <tr><td>Cabecera de escritorio con «Precios»</td><td>«Productos» en su lugar; el botón aparece al bajar</td><td>Los precios ya se ven arriba.</td></tr>
+        <tr><td>No estaba</td><td>Bloque «Qué incluye»</td><td>Resuelve dudas antes de comprar y da a Google y a ChatGPT datos concretos que citar. Justap y MontesTAP lo tienen.</td></tr>
+        <tr><td>No estaba</td><td>Bloque del soporte y página «Productos»</td><td>Ahora vendes dos productos.</td></tr>
+        <tr><td>Visual del hero con la tarjeta y el gesto</td><td>Escena animada como primera imagen de la galería, seguida de las fotos</td><td>Encaja con el formato de ficha y no retrasa la carga.</td></tr>
+        <tr><td>Botón fijo en móvil</td><td>Muestra también el pack y el precio</td><td>Recuerda lo que vas a pedir sin volver arriba.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="pendiente">
+    <h2>Lo que necesito de ti</h2>
+    <ol>
+      <li>Elige <a href="#nombre">nombre</a> y <a href="#titular">titular</a>.</li>
+      <li>Aprueba colores, tipografía y estructura, o dime qué cambiarías.</li>
+      <li>¿Cuánto cuesta el soporte de mostrador? ¿Tiene los mismos packs que la tarjeta?</li>
+      <li>¿Se cumplen las 48 h cuando el proveedor personaliza la tarjeta? El plazo irá en la zona más visible y en Google Shopping, así que tiene que ser real.</li>
+      <li>Pregunta al proveedor si puede grabar en el chip, e imprimir en el QR, una dirección distinta para cada tarjeta (del tipo <code>tudominio.es/t/Ab3dE9xZ</code>) y dejarla bloqueada.</li>
+    </ol>
+    <p class="nota">Antes de lanzar harán falta fotos reales de la tarjeta y del soporte, porque Google Shopping las pide. De momento no se envía a Baleares, Canarias, Ceuta ni Melilla; en la Fase 3 resolveré cómo impedir pedidos a esas zonas, porque Stripe solo permite limitar por países.</p>
+  </section>
+</main>
+</body>
+</html>

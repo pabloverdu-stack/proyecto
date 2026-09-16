@@ -1,0 +1,57 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../config/site';
+---
+
+<Legal title="Condiciones de compra" description={`Condiciones generales de contratación de ${site.name}: pedido, precio, envío, garantía y devoluciones.`} path="/condiciones" updated="[FECHA]">
+  <h2>1. Quién vende</h2>
+  <p>[NOMBRE O RAZÓN SOCIAL], con NIF/CIF [NIF/CIF] y domicilio en [DOMICILIO COMPLETO], que opera con el nombre comercial {site.name}. Contacto: [EMAIL DE CONTACTO].</p>
+
+  <h2>2. Qué vendemos</h2>
+  <p>Tarjetas y soportes con chip NFC y código QR que abren la ventana para escribir una reseña de un negocio en Google. Cada producto se programa con el enlace del negocio que indicas al hacer el pedido.</p>
+
+  <h2>3. Cómo se compra</h2>
+  <ol>
+    <li>Eliges el producto y el pack.</li>
+    <li>Buscas tu negocio o pegas el enlace de su ficha de Google.</li>
+    <li>Pagas en la página segura de Stripe, donde aceptas estas condiciones.</li>
+    <li>Recibes un email de confirmación del pedido.</li>
+  </ol>
+  <p>El contrato se formaliza en español. Guardamos una copia del pedido, que puedes pedirnos por email.</p>
+
+  <h2>4. Precio y pago</h2>
+  <p>Los precios incluyen el IVA. El envío a la península es gratuito. El pago se hace con tarjeta, Apple Pay o Google Pay a través de Stripe. Si lo pides, emitimos factura con tus datos fiscales.</p>
+
+  <h2>5. Comprobación del negocio</h2>
+  <p>Al hacer el pedido confirmas que eres el titular del negocio o que tienes permiso para pedir el producto en su nombre. Antes de programarlo comprobamos que el enlace lleva a su ficha de Google. Si no cuadra, te escribimos antes de enviar nada.</p>
+
+  <h2>6. Envío y plazos</h2>
+  <p>Enviamos solo a la península. El plazo de entrega es de [48 H LABORABLES A CONTAR DESDE … : CONFIRMAR CON EL PROVEEDOR]. Si un pedido se hace con una dirección de Baleares, Canarias, Ceuta o Melilla, te contactaremos para [REEMBOLSAR O BUSCAR UNA SOLUCIÓN].</p>
+  <p>Revisa el paquete al recibirlo y avísanos de cualquier daño en un plazo de [NÚMERO] días.</p>
+
+  <h2>7. Cambio de enlace</h2>
+  <p>Si cambias de local o de ficha de Google, cambiamos gratis el destino de tu tarjeta o soporte. No hace falta reprogramar el producto físico.</p>
+
+  <h2>8. Uso correcto</h2>
+  <p>El producto sirve para facilitar que cualquier cliente deje su opinión. Te comprometes a usarlo respetando las normas de Google sobre reseñas: sin ofrecer nada a cambio de una reseña y sin pedirlas solo a quienes vayan a opinar bien. No garantizamos un número de reseñas ni su valoración.</p>
+
+  <h2>9. Garantía</h2>
+  <p>[A REVISAR POR TU ASESOR] Si compras como consumidor, tienes la garantía legal de conformidad de tres años. Si el producto llega defectuoso o deja de funcionar por causas no imputables a un mal uso, lo reponemos sin coste. [CONDICIONES DE REPOSICIÓN PARA EMPRESAS Y AUTÓNOMOS]</p>
+
+  <h2>10. Desistimiento y devoluciones</h2>
+  <p>[ELEGIR UNA OPCIÓN CON TU ASESOR Y BORRAR LA OTRA]</p>
+  <div class="option">
+    <h3>Opción A: venta dirigida a empresas y autónomos</h3>
+    <p>Los productos se venden a negocios para su actividad profesional, por lo que no se aplica el derecho de desistimiento previsto para consumidores. Aun así, aceptamos devoluciones de productos sin usar en un plazo de [NÚMERO] días desde la entrega, con [COSTE DE DEVOLUCIÓN A CARGO DE …].</p>
+  </div>
+  <div class="option">
+    <h3>Opción B: producto personalizado</h3>
+    <p>Si compras como consumidor, dispones de 14 días naturales desde la entrega para desistir, salvo en los bienes confeccionados conforme a tus especificaciones o claramente personalizados (artículo 103.c del Real Decreto Legislativo 1/2007). [DETERMINAR SI UN PRODUCTO PROGRAMADO CON EL ENLACE DEL NEGOCIO, O IMPRESO CON SU LOGO, ENTRA EN ESTA EXCEPCIÓN.] Para desistir cuando proceda, escríbenos a [EMAIL DE CONTACTO] indicando tu pedido; te reembolsaremos en un máximo de 14 días desde que recibamos el producto.</p>
+  </div>
+
+  <h2>11. Atención al cliente</h2>
+  <p>Escríbenos a [EMAIL DE CONTACTO] y te responderemos en un plazo de [NÚMERO] días laborables. [INFORMACIÓN SOBRE HOJAS DE RECLAMACIONES O SISTEMAS DE RESOLUCIÓN DE CONFLICTOS A LOS QUE ESTÉS ADHERIDO, SI LOS HAY.]</p>
+
+  <h2>12. Ley aplicable</h2>
+  <p>Estas condiciones se rigen por la legislación española. [JURISDICCIÓN A REVISAR: LOS CONSUMIDORES PUEDEN ACUDIR A LOS TRIBUNALES DE SU DOMICILIO.]</p>
+</Legal>

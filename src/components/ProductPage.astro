@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductHero from './ProductHero.astro';
+import HowItWorks from './HowItWorks.astro';
+import WhyItMatters from './WhyItMatters.astro';
+import WhereUsed from './WhereUsed.astro';
+import Includes from './Includes.astro';
+import CrossSell from './CrossSell.astro';
+import Faq from './Faq.astro';
+import Closing from './Closing.astro';
+import { faq } from '../content/faq';
+import { getActiveProducts, productUrl, recommendedPack, type Product } from '../lib/products';
+import { breadcrumbLd, faqLd, organizationLd, productLd, websiteLd } from '../lib/seo';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const d = product.data;
+const base = Astro.site ?? new URL('https://fichaviva.es');
+const products = await getActiveProducts();
+const crossTarget = d.crossSell ? products.find((p) => p.id === d.crossSell!.slug) : undefined;
+const path = productUrl(product);
+
+const jsonLd: Record<string, unknown>[] = [productLd(product, base), faqLd(faq)];
+if (d.featured) jsonLd.unshift(organizationLd(base), websiteLd(base));
+else
+  jsonLd.push(
+    breadcrumbLd(base, [
+      { name: 'Inicio', path: '/' },
+      { name: 'Productos', path: '/productos' },
+      { name: d.listName, path },
+    ]),
+  );
+---
+
+<Base
+  title={d.seo.title}
+  description={d.seo.description}
+  path={path}
+  jsonLd={jsonLd}
+  onProductPage
+  headerCta={{ href: `/pedido?producto=${product.id}&pack=${recommendedPack(product).id}`, label: `Pedir mi ${d.unit.singular}` }}
+>
+  <ProductHero product={product} crossSellUrl={crossTarget ? productUrl(crossTarget) : undefined} />
+  <HowItWorks product={product} />
+  <WhyItMatters />
+  <WhereUsed />
+  <Includes product={product} />
+  {
+    crossTarget && d.crossSell && (
+      <CrossSell target={crossTarget} href={productUrl(crossTarget)} title={d.crossSell.title} body={d.crossSell.body} />
+    )
+  }
+  <Faq items={faq} />
+  <Closing product={product} />
+</Base>

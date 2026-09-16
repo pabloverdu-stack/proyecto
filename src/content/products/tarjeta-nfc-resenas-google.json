@@ -1,0 +1,49 @@
+{
+  "name": "Tarjeta NFC de reseñas de Google",
+  "listName": "Tarjeta NFC de reseñas",
+  "unit": { "singular": "tarjeta", "plural": "tarjetas", "gender": "f" },
+  "order": 1,
+  "featured": true,
+  "status": "active",
+  "productType": "google_review",
+  "visual": "card",
+  "headline": "Más reseñas en Google de los clientes que ya tienes",
+  "subheadline": "Acercan el móvil a esta tarjeta NFC y se abre la ventana para dejarte su reseña. Sin apps.",
+  "seo": {
+    "title": "Tarjeta NFC para reseñas de Google",
+    "description": "Tus clientes acercan el móvil y te dejan su reseña en Google, sin apps. Tarjeta NFC con QR, lista para usar. 30 € con IVA y envío gratis en 48 h."
+  },
+  "packs": [
+    { "id": "1", "units": 1, "priceCents": 3000, "stripeLookupKey": "tarjeta_pack_1" },
+    {
+      "id": "2",
+      "units": 2,
+      "priceCents": 5200,
+      "stripeLookupKey": "tarjeta_pack_2",
+      "recommended": true,
+      "note": "Una para el mostrador y otra para llevar encima."
+    },
+    { "id": "5", "units": 5, "priceCents": 11000, "stripeLookupKey": "tarjeta_pack_5" }
+  ],
+  "provisionalPrice": false,
+  "includes": [
+    "Tarjeta de PVC de 85 × 54 mm, del tamaño de una tarjeta de crédito.",
+    "Chip NFC programado con el enlace de reseña de tu negocio.",
+    "Código QR impreso para los móviles sin NFC.",
+    "Bloqueada contra escritura: nadie puede cambiarle el enlace.",
+    "Sin batería, sin app y sin cuotas.",
+    "Cambio de enlace gratis si te mudas o cambias de ficha."
+  ],
+  "specs": [
+    { "label": "Formato", "value": "85 × 54 mm" },
+    { "label": "Material", "value": "PVC" },
+    { "label": "Tecnología", "value": "NFC y código QR" },
+    { "label": "Compatibilidad", "value": "iPhone y Android con NFC; QR para el resto" }
+  ],
+  "crossSell": {
+    "slug": "soporte-nfc-resenas-google",
+    "text": "¿La quieres para el mostrador? Mira el soporte",
+    "title": "Para el mostrador, el soporte",
+    "body": "La misma tecnología en un soporte que se queda de pie junto a la caja, a la vista de todos."
+  }
+}

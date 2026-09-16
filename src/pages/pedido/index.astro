@@ -1,0 +1,285 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
+import { getActiveProducts, toClientCatalog } from '../../lib/products';
+
+const catalog = toClientCatalog(await getActiveProducts());
+---
+
+<Base
+  title="Tu pedido"
+  description="Elige el negocio para el que quieres tu tarjeta NFC de reseñas y paga de forma segura."
+  path="/pedido"
+  noindex
+>
+  <section class="container order" aria-labelledby="pedido-titulo">
+    <p class="step-label">Paso 2 de 3</p>
+    <div class="progress" aria-hidden="true"><span class="is-done"></span><span class="is-done"></span><span></span></div>
+
+    <h1 class="h1" id="pedido-titulo">¿Para qué negocio es tu pedido?</h1>
+    <p class="lead intro">Búscalo como lo harías en Google Maps. Con eso programamos el enlace para que te dejen reseña.</p>
+
+    <p class="notice" data-cancelled hidden>No se ha hecho ningún cargo. Puedes terminar el pedido cuando quieras.</p>
+
+    <form class="order-form" data-order-form novalidate>
+      <div class="field">
+        <label for="buscar-negocio">Nombre del negocio y ciudad</label>
+        <div class="combo">
+          <input
+            id="buscar-negocio"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="resultados-negocio"
+            aria-describedby="estado-busqueda"
+            placeholder="Por ejemplo: Peluquería Nati Valencia"
+            data-search
+          />
+          <ul class="results" id="resultados-negocio" role="listbox" aria-label="Negocios encontrados" hidden data-results></ul>
+        </div>
+        <p class="hint" id="estado-busqueda" aria-live="polite" data-search-status></p>
+      </div>
+
+      <div class="selected" data-selected hidden>
+        <p class="selected-label">Tu negocio</p>
+        <p class="selected-name" data-selected-name></p>
+        <p class="selected-address" data-selected-address></p>
+        <div class="selected-actions">
+          <a class="btn-plain" href="#" target="_blank" rel="noopener" data-test-link>Probar enlace</a>
+          <button type="button" class="text-button" data-change-business>Cambiar de negocio</button>
+        </div>
+        <p class="hint" data-test-hint>«Probar enlace» abre la ventana de reseña de Google en otra pestaña. Si es tu negocio, ciérrala sin escribir nada.</p>
+      </div>
+
+      <details class="manual" data-manual>
+        <summary>¿No aparece tu negocio?</summary>
+        <div class="manual-fields">
+          <div class="field">
+            <label for="manual-nombre">Nombre del negocio</label>
+            <input id="manual-nombre" type="text" maxlength="200" autocomplete="organization" data-manual-name />
+          </div>
+          <div class="field">
+            <label for="manual-enlace">Enlace de tu ficha en Google Maps</label>
+            <input id="manual-enlace" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/…" data-manual-url aria-describedby="manual-ayuda" />
+            <p class="hint" id="manual-ayuda">Abre tu negocio en Google Maps, pulsa «Compartir» y copia el enlace. Lo revisaremos a mano antes de programar tu pedido.</p>
+          </div>
+        </div>
+      </details>
+
+      <div class="summary">
+        <p><strong data-summary-units></strong>, <span data-summary-price></span>. IVA incluido. <a href="/" data-summary-change>Cambiar</a></p>
+        <p class="hint">Envío gratis a la {site.shipping.zone} en {site.shipping.time}. No enviamos a {site.shipping.excluded}.</p>
+      </div>
+
+      <p class="error" role="alert" data-error hidden></p>
+      <button type="submit" class="btn-buy is-block" data-submit disabled>Pedir mi tarjeta</button>
+      <p class="hint pay-hint">Pagarás en Stripe con tarjeta, Apple Pay o Google Pay. Allí puedes añadir tu NIF para la factura.</p>
+    </form>
+  </section>
+
+  <script is:inline type="application/json" id="catalogo-pedido" set:html={JSON.stringify(catalog).replace(/</g, '\\u003c')} />
+</Base>
+
+<script>
+  import '../../scripts/order';
+</script>
+
+<style>
+  .order {
+    max-width: 40rem;
+    padding-block: var(--space-8) var(--section-gap);
+  }
+
+  .step-label {
+    color: var(--color-grafito);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+
+  .progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    margin: var(--space-2) 0 var(--space-6);
+  }
+
+  .progress span {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-linea);
+  }
+
+  .progress .is-done {
+    background: var(--color-tinta);
+  }
+
+  .intro {
+    margin-top: var(--space-3);
+  }
+
+  .notice {
+    margin-top: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-blanco);
+  }
+
+  .order-form {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-8);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  label,
+  summary {
+    font-weight: var(--weight-semibold);
+  }
+
+  input[type='text'],
+  input[type='url'] {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0 var(--space-4);
+    border: var(--border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-blanco);
+    font-size: 1rem;
+  }
+
+  input::placeholder {
+    color: var(--color-grafito);
+  }
+
+  input:focus-visible {
+    outline: 2px solid var(--color-tinta);
+    outline-offset: 2px;
+  }
+
+  .combo {
+    position: relative;
+  }
+
+  .results {
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+    border: var(--border-control);
+    border-radius: var(--radius-md);
+    background: var(--color-blanco);
+    overflow: hidden;
+  }
+
+  .results :global(li) {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    border-top: var(--border-hair);
+    cursor: pointer;
+  }
+
+  .results :global(li:first-child) {
+    border-top: 0;
+  }
+
+  .results :global(li[aria-selected='true']),
+  .results :global(li:hover) {
+    background: var(--color-mostrador);
+  }
+
+  .results :global(.result-name) {
+    font-weight: var(--weight-semibold);
+  }
+
+  .results :global(.result-address) {
+    color: var(--color-grafito);
+    font-size: var(--text-sm);
+  }
+
+  .hint {
+    color: var(--color-grafito);
+    font-size: var(--text-xs);
+  }
+
+  .selected {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-5);
+    border: var(--border-selected);
+    border-radius: var(--radius-md);
+    background: var(--color-blanco);
+  }
+
+  .selected-label {
+    color: var(--color-grafito);
+    font-size: var(--text-xs);
+  }
+
+  .selected-name {
+    font-size: var(--text-h3);
+    font-weight: var(--weight-semibold);
+  }
+
+  .selected-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-3) 0 var(--space-1);
+  }
+
+  .text-button {
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  .manual {
+    border-top: var(--border-hair);
+    border-bottom: var(--border-hair);
+  }
+
+  .manual summary {
+    min-height: 3rem;
+    padding-block: var(--space-3);
+    cursor: pointer;
+  }
+
+  .manual-fields {
+    display: grid;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
+  }
+
+  .summary {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .summary a {
+    font-weight: var(--weight-semibold);
+  }
+
+  .error {
+    padding: var(--space-3) var(--space-4);
+    border-left: 3px solid var(--color-error);
+    color: var(--color-error);
+    font-weight: var(--weight-semibold);
+  }
+
+  .pay-hint {
+    margin-top: calc(var(--space-3) * -1);
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+
+---
+
+<section class="section" id="por-que" aria-labelledby="porque-titulo">
+  <div class="container why">
+    <div class="section-intro">
+      <h2 class="h2" id="porque-titulo">Tus clientes contentos no dejan reseña porque buscarte les da pereza</h2>
+      <p class="lead">
+        Pedir una reseña es fácil. Lo difícil es que el cliente abra Google Maps, busque tu negocio y encuentre dónde
+        escribir. Por el camino, se le olvida.
+      </p>
+    </div>
+    <ul class="chain">
+      <li>
+        <h3 class="h3">Más reseñas recientes</h3>
+        <p>Quien te busca ve que tu negocio está vivo y que la gente sigue viniendo.</p>
+      </li>
+      <li>
+        <h3 class="h3">Mejor presencia en Google Maps</h3>
+        <p>
+          Google tiene en cuenta cuántas reseñas tienes y su valoración para ordenar los negocios de tu zona.
+          <a href="https://support.google.com/business/answer/7091?hl=es" rel="noopener">Lo explica Google</a>.
+        </p>
+      </li>
+      <li>
+        <h3 class="h3">Más confianza</h3>
+        <p>Quien no te conoce decide leyendo lo que cuentan otros clientes.</p>
+      </li>
+      <li>
+        <h3 class="h3">Más gente que se decide a venir</h3>
+        <p>Con opiniones recientes y una ficha activa, es más fácil que te elijan a ti.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .why {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .chain {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chain li {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-top: var(--border-hair);
+  }
+
+  .chain li:last-child {
+    border-bottom: var(--border-hair);
+  }
+
+  .chain a {
+    font-weight: var(--weight-semibold);
+  }
+
+  @media (min-width: 960px) {
+    .why {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+  }
+</style>

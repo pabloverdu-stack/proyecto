@@ -1,0 +1,138 @@
+---
+import Scene from './Scene.astro';
+import { site } from '../config/site';
+import type { Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const d = product.data;
+const font = "'Chivo Variable', Chivo, system-ui, sans-serif";
+const brand = site.name.toLowerCase();
+// Patrón decorativo con aspecto de QR (no es un código real).
+const qrCells = [
+  [0, 3], [1, 5], [2, 3], [2, 4], [3, 0], [3, 2], [3, 5], [3, 6], [4, 1], [4, 4], [5, 3], [5, 5], [5, 6], [6, 2], [6, 4],
+];
+---
+
+<section class="section" id="incluye" aria-labelledby="incluye-titulo">
+  <div class="container includes">
+    <figure class="drawing">
+      {
+        d.visual === 'card' ? (
+          <svg viewBox="0 0 560 250" role="img" aria-label="Dibujo de la tarjeta por delante y por detrás: 85 por 54 milímetros, con el código QR en el dorso">
+            <g font-family={font} fill="#17191A">
+              <line x1="20" y1="22" x2="260" y2="22" stroke="#5B6166" />
+              <line x1="20" y1="16" x2="20" y2="28" stroke="#5B6166" />
+              <line x1="260" y1="16" x2="260" y2="28" stroke="#5B6166" />
+              <text x="140" y="14" text-anchor="middle" font-size="12" fill="#5B6166">85 mm</text>
+              <line x1="272" y1="40" x2="272" y2="191" stroke="#5B6166" />
+              <line x1="266" y1="40" x2="278" y2="40" stroke="#5B6166" />
+              <line x1="266" y1="191" x2="278" y2="191" stroke="#5B6166" />
+              <text x="282" y="120" font-size="12" fill="#5B6166">54 mm</text>
+
+              <rect x="20" y="40" width="240" height="151" rx="10" fill="#FFFFFF" stroke="#17191A" stroke-width="1.5" />
+              <text x="40" y="70" font-size="15" font-weight="700">{brand}</text>
+              <circle cx="220" cy="115" r="18" fill="none" stroke="#17191A" stroke-width="2" />
+              <circle cx="220" cy="115" r="4.5" />
+              <text x="40" y="160" font-size="11" fill="#5B6166">Acerca el móvil</text>
+              <text x="40" y="176" font-size="11">Déjanos tu reseña en Google</text>
+              <text x="140" y="222" text-anchor="middle" font-size="13" font-weight="600">Cara</text>
+
+              <rect x="320" y="40" width="240" height="151" rx="10" fill="#FFFFFF" stroke="#17191A" stroke-width="1.5" />
+              <g transform="translate(340 66)">
+                <rect width="98" height="98" fill="#FFFFFF" stroke="#17191A" stroke-width="1.5" />
+                {[[6, 6], [64, 6], [6, 64]].map(([x, y]) => (
+                  <g>
+                    <rect x={x} y={y} width="28" height="28" fill="none" stroke="#17191A" stroke-width="5" />
+                    <rect x={x + 9} y={y + 9} width="10" height="10" />
+                  </g>
+                ))}
+                {qrCells.map(([cx, cy]) => <rect x={38 + cx! * 8} y={38 + cy! * 8} width="7" height="7" />)}
+              </g>
+              <text x="452" y="100" font-size="11" fill="#5B6166">¿Sin NFC?</text>
+              <text x="452" y="116" font-size="11">Escanea</text>
+              <text x="452" y="132" font-size="11">el código</text>
+              <text x="440" y="222" text-anchor="middle" font-size="13" font-weight="600">Dorso</text>
+            </g>
+          </svg>
+        ) : (
+          <Scene variant="stand" state="idle" brand={brand} label="El soporte de mostrador visto de frente" class="stand-scene" />
+        )
+      }
+    </figure>
+    <div class="details">
+      <h2 class="h2" id="incluye-titulo">Qué incluye</h2>
+      <ul class="include-list">{d.includes.map((item) => <li>{item}</li>)}</ul>
+      <dl class="specs">
+        {
+          d.specs.map((spec) => (
+            <div>
+              <dt>{spec.label}</dt>
+              <dd>{spec.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .includes {
+    display: grid;
+    gap: var(--space-10);
+  }
+
+  .drawing {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-mostrador);
+  }
+
+  .drawing :global(.stand-scene) {
+    border-radius: var(--radius-md);
+  }
+
+  .details {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+  }
+
+  .include-list {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .specs {
+    display: grid;
+    margin: 0;
+    border-top: var(--border-hair);
+  }
+
+  .specs div {
+    display: grid;
+    grid-template-columns: minmax(7rem, 10rem) 1fr;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: var(--border-hair);
+    font-size: var(--text-sm);
+  }
+
+  .specs dt {
+    color: var(--color-grafito);
+  }
+
+  @media (min-width: 960px) {
+    .includes {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: var(--space-16);
+      align-items: center;
+    }
+  }
+</style>

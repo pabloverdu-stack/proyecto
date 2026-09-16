@@ -1,0 +1,112 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  /** En las fichas de producto los enlaces van a secciones de la misma página. */
+  onProductPage?: boolean;
+  showProducts?: boolean;
+  cta?: { href: string; label: string };
+}
+
+const { onProductPage = false, showProducts = false, cta } = Astro.props;
+const anchor = (hash: string) => (onProductPage ? hash : `/${hash}`);
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label={`${site.name}, inicio`}>{site.name}</a>
+    <nav aria-label="Principal">
+      <ul class="nav-list">
+        <li class="desktop-only"><a href={anchor('#como-funciona')}>Cómo funciona</a></li>
+        <li class="desktop-only"><a href={anchor('#preguntas')}>Preguntas</a></li>
+        {showProducts && <li><a href="/productos">Productos</a></li>}
+      </ul>
+    </nav>
+    {
+      cta && (
+        <a href={cta.href} class="btn-buy header-cta" data-header-cta aria-hidden="true" tabindex="-1">
+          {cta.label}
+        </a>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 40;
+    background: var(--color-papel);
+    border-bottom: var(--border-hair);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    font-size: 1.125rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+    text-decoration: none;
+  }
+
+  nav {
+    margin-left: auto;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .nav-list a:hover {
+    text-decoration: underline;
+  }
+
+  .desktop-only,
+  .header-cta {
+    display: none;
+  }
+
+  @media (min-width: 960px) {
+    .site-header {
+      position: sticky;
+      top: 0;
+    }
+
+    .desktop-only {
+      display: list-item;
+    }
+
+    .header-cta {
+      display: inline-flex;
+      min-height: 2.5rem;
+      font-size: var(--text-sm);
+      visibility: hidden;
+      opacity: 0;
+      transition:
+        opacity var(--duration),
+        visibility var(--duration);
+    }
+
+    .header-cta.is-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+</style>

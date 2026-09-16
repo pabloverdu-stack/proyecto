@@ -1,0 +1,24 @@
+# Dependencias y compilación
+node_modules/
+dist/
+.astro/
+.wrangler/
+.netlify/
+
+# Node.js portátil usado durante el desarrollo
+.tools/
+
+# Secretos
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# QA
+qa/capturas/
+qa/lighthouse/
+test-results/
+
+# Sistema
+.DS_Store
+Thumbs.db

@@ -1,0 +1,186 @@
+---
+import Base from '../../layouts/Base.astro';
+import { formatEuros, site } from '../../config/site';
+import { getStripe } from '../../lib/stripe';
+import { getDemoOrder, getStore } from '../../lib/store';
+import { getActiveProducts, unitsLabel } from '../../lib/products';
+
+export const prerender = false;
+
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+interface Summary {
+  id: string;
+  email: string | null;
+  business: string;
+  units: number;
+  productId: string;
+  amount: number;
+  currency: string;
+}
+
+const sessionId = Astro.url.searchParams.get('session_id');
+const demoId = Astro.url.searchParams.get('demo');
+let state: 'paid' | 'pending' | 'unknown' = 'unknown';
+let summary: Summary | null = null;
+let demoCards: { code: string }[] = [];
+
+if (sessionId && /^cs_[\w]+$/.test(sessionId)) {
+  const stripe = getStripe();
+  if (stripe) {
+    try {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      state = session.payment_status === 'paid' ? 'paid' : 'pending';
+      summary = {
+        id: session.id,
+        email: session.customer_details?.email ?? null,
+        business: session.metadata?.business_name ?? '',
+        units: Number(session.metadata?.units) || 1,
+        productId: session.metadata?.product ?? '',
+        amount: session.amount_total ?? 0,
+        currency: session.currency ?? 'eur',
+      };
+    } catch (error) {
+      console.error('[confirmado]', error instanceof Error ? error.message : error);
+    }
+  }
+} else if (demoId && import.meta.env.DEV && getStore()?.kind === 'memory') {
+  const demo = getDemoOrder(demoId);
+  if (demo) {
+    state = 'paid';
+    demoCards = demo.cards;
+    summary = {
+      id: demo.order.stripeSessionId,
+      email: demo.input.customerEmail,
+      business: demo.input.business.name,
+      units: demo.input.units,
+      productId: demo.input.productId,
+      amount: demo.input.amountTotal,
+      currency: demo.input.currency,
+    };
+  }
+}
+
+const product = summary ? (await getActiveProducts()).find((p) => p.id === summary!.productId) : undefined;
+const unitsText = summary && product ? unitsLabel(product, summary.units) : summary ? `${summary.units} unidades` : '';
+const female = product?.data.unit.gender !== 'm';
+const purchase =
+  state === 'paid' && summary
+    ? {
+        transaction_id: summary.id,
+        value: summary.amount / 100,
+        currency: summary.currency.toUpperCase(),
+        items: [{ item_id: summary.productId, quantity: summary.units }],
+      }
+    : null;
+---
+
+<Base title="Pedido recibido" description="Confirmación de tu pedido." path="/pedido/confirmado" noindex>
+  <section class="container done" aria-labelledby="confirmado-titulo">
+    {
+      state === 'paid' && summary ? (
+        <>
+          <p class="step-label">Paso 3 de 3</p>
+          <h1 class="h1" id="confirmado-titulo">
+            Pedido recibido. Gracias.
+          </h1>
+          <p class="lead">
+            {unitsText} para <strong>{summary.business}</strong>, {formatEuros(summary.amount)} con IVA incluido.
+            {summary.email && <> Te hemos enviado la confirmación a {summary.email}.</>}
+          </p>
+        </>
+      ) : state === 'pending' ? (
+        <>
+          <h1 class="h1" id="confirmado-titulo">Estamos esperando la confirmación del pago</h1>
+          <p class="lead">Algunos métodos de pago tardan un poco. Te escribiremos en cuanto se confirme.</p>
+        </>
+      ) : (
+        <>
+          <h1 class="h1" id="confirmado-titulo">Gracias por tu pedido</h1>
+          <p class="lead">
+            Si has completado el pago, te llegará un email de confirmación en unos minutos. Si no te llega, escríbenos a{' '}
+            <a href={`mailto:${site.email}`}>{site.email}</a>.
+          </p>
+        </>
+      )
+    }
+
+    <h2 class="h3 next-title">Qué pasa ahora</h2>
+    <ol class="next">
+      <li>Comprobamos que el enlace lleva a la ficha de Google de tu negocio.</li>
+      <li>Programamos tu pedido y lo bloqueamos para que nadie pueda cambiar el enlace.</li>
+      <li>Te llega en {site.shipping.time} laborables, {female ? 'lista' : 'listo'} para usar.</li>
+    </ol>
+    <p class="muted">¿Algo no está bien? Escríbenos a <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+
+    {
+      demoCards.length > 0 && (
+        <div class="demo">
+          <h2 class="h3">Modo demo (solo en desarrollo)</h2>
+          <p>No se ha cobrado nada. Estas son las URL que se grabarían en cada chip; ábrelas para probar la redirección:</p>
+          <ul>
+            {demoCards.map((card) => (
+              <li>
+                <a href={`/t/${card.code}`} target="_blank" rel="noopener">
+                  /t/{card.code}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </section>
+  {purchase && <div hidden data-purchase={JSON.stringify(purchase)} />}
+</Base>
+
+<script>
+  import { trackOnce } from '../../scripts/track';
+
+  const holder = document.querySelector<HTMLElement>('[data-purchase]');
+  if (holder?.dataset.purchase) {
+    const purchase = JSON.parse(holder.dataset.purchase) as { transaction_id: string };
+    trackOnce(`purchase_${purchase.transaction_id}`, 'purchase', purchase);
+  }
+</script>
+
+<style>
+  .done {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+    padding-block: var(--space-10) var(--section-gap);
+  }
+
+  .step-label {
+    color: var(--color-grafito);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+
+  .next-title {
+    margin-top: var(--space-6);
+  }
+
+  .next {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .demo {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+    padding: var(--space-5);
+    border: 1px dashed var(--color-tinta);
+    border-radius: var(--radius-md);
+  }
+
+  .demo ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-family: ui-monospace, monospace;
+  }
+</style>

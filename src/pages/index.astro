@@ -1,0 +1,8 @@
+---
+import ProductPage from '../components/ProductPage.astro';
+import { getFeaturedProduct } from '../lib/products';
+
+const product = await getFeaturedProduct();
+---
+
+<ProductPage product={product} />

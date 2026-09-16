@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import Scene from '../../components/Scene.astro';
+import { site, formatEuros } from '../../config/site';
+import { fromPrice, getActiveProducts, productUrl } from '../../lib/products';
+import { breadcrumbLd } from '../../lib/seo';
+
+const products = await getActiveProducts();
+const base = Astro.site ?? new URL('https://fichaviva.es');
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: products.map((product, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    url: new URL(productUrl(product), base).href,
+    name: product.data.name,
+  })),
+};
+---
+
+<Base
+  title="Productos NFC para reseñas de Google"
+  description="Tarjeta y soporte de mostrador con NFC y QR para que tus clientes te dejen reseña en Google sin apps. IVA incluido y envío gratis a la península."
+  path="/productos"
+  jsonLd={[itemList, breadcrumbLd(base, [{ name: 'Inicio', path: '/' }, { name: 'Productos', path: '/productos' }])]}
+>
+  <section class="container listing" aria-labelledby="productos-titulo">
+    <h1 class="h1" id="productos-titulo">Productos</h1>
+    <ul class="grid">
+      {
+        products.map((product) => (
+          <li>
+            <a class="tile" href={productUrl(product)}>
+              <Scene variant={product.data.visual} state="idle" brand={site.name.toLowerCase()} label={product.data.name} class="tile-scene" />
+              <span class="tile-name">{product.data.name}</span>
+              <span class="tile-price">
+                {product.data.packs.length > 1 ? 'Desde ' : ''}
+                {formatEuros(fromPrice(product))}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .listing {
+    padding-block: var(--space-10) var(--section-gap);
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-8);
+    margin: var(--space-8) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tile {
+    display: grid;
+    gap: var(--space-2);
+    text-decoration: none;
+  }
+
+  .tile :global(.tile-scene) {
+    aspect-ratio: 4 / 3;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-lg);
+  }
+
+  .tile-name {
+    font-weight: var(--weight-semibold);
+  }
+
+  .tile:hover .tile-name {
+    text-decoration: underline;
+  }
+
+  .tile-price {
+    color: var(--color-grafito);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

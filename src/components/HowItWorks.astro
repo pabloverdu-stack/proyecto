@@ -1,0 +1,90 @@
+---
+import Scene from './Scene.astro';
+import { site } from '../config/site';
+import type { Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const d = product.data;
+const female = d.unit.gender === 'f';
+const article = female ? 'la' : 'el';
+const brand = site.name.toLowerCase();
+---
+
+<section class="section" id="como-funciona" aria-labelledby="como-titulo">
+  <div class="container">
+    <div class="section-intro">
+      <h2 class="h2" id="como-titulo">Cómo funciona</h2>
+      <p class="lead">Tres pasos, y ninguno lo haces tú.</p>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        <Scene variant={d.visual} state="approach" brand={brand} label={`Un móvil acercándose a ${article} ${d.unit.singular}`} class="step-scene" />
+        <h3 class="h3">Tu cliente acerca el móvil</h3>
+        <p>Basta con desbloquearlo y acercarlo {female ? 'a la tarjeta' : 'al soporte'}. Si su móvil no tiene NFC, escanea el código QR.</p>
+      </li>
+      <li class="step">
+        <Scene variant={d.visual} state="open" brand={brand} label="La ventana para escribir la reseña abierta en el móvil" class="step-scene" />
+        <h3 class="h3">Se abre la reseña de tu negocio</h3>
+        <p>Directamente la ventana para escribir en Google. Sin buscar tu ficha ni instalar nada.</p>
+      </li>
+      <li class="step">
+        <Scene variant={d.visual} state="done" brand={brand} label="La reseña publicada en el móvil" class="step-scene" />
+        <h3 class="h3">Publica su opinión</h3>
+        <p>En un momento y con la visita reciente, que es cuando mejor se recuerda.</p>
+      </li>
+    </ol>
+    <p class="process">
+      Tú solo eliges tu negocio al hacer el pedido. Nosotros {female ? 'la programamos' : 'lo programamos'} y te llega en
+      {site.shipping.time}.
+    </p>
+  </div>
+</section>
+
+<style>
+  .steps {
+    display: grid;
+    gap: var(--space-10);
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .step {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    counter-increment: step;
+  }
+
+  .step :global(.step-scene) {
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .step .h3::before {
+    content: counter(step) '. ';
+  }
+
+  .step p {
+    max-width: 34rem;
+  }
+
+  .process {
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: var(--border-hair);
+    font-weight: var(--weight-semibold);
+  }
+
+  @media (min-width: 760px) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+  }
+</style>

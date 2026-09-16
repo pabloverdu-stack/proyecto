@@ -1,0 +1,58 @@
+---
+const places = [
+  { title: 'Restaurantes y bares', text: 'Junto a la cuenta, en la mesa o en la barra.' },
+  { title: 'Peluquerías y estética', text: 'En el mostrador, al cobrar.' },
+  { title: 'Clínicas y consultas', text: 'En recepción, al salir de la cita.' },
+  { title: 'Servicios a domicilio', text: 'En la cartera, para sacarla al terminar el trabajo.' },
+  { title: 'Talleres y comercios', text: 'Junto a la caja o al entregar el encargo.' },
+];
+---
+
+<section class="section" id="donde" aria-labelledby="donde-titulo">
+  <div class="container">
+    <div class="section-intro">
+      <h2 class="h2" id="donde-titulo">Dónde se usa</h2>
+      <p class="lead">En cualquier sitio donde terminas de atender a alguien.</p>
+    </div>
+    <ul class="places">
+      {
+        places.map((place) => (
+          <li>
+            <h3 class="h3">{place.title}</h3>
+            <p>{place.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .places {
+    display: grid;
+    gap: 0 var(--space-8);
+    margin: var(--space-10) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .places li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    padding-block: var(--space-5);
+    border-top: var(--border-hair);
+  }
+
+  @media (min-width: 640px) {
+    .places {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .places {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+</style>

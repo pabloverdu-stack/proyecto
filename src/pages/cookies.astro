@@ -1,0 +1,31 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../config/site';
+---
+
+<Legal title="Política de cookies" description={`Qué cookies usa ${site.name}, para qué y cómo cambiar tu elección.`} path="/cookies" updated="[FECHA]">
+  <h2>1. Qué son</h2>
+  <p>Las cookies y tecnologías parecidas, como el almacenamiento local del navegador, guardan pequeños datos en tu dispositivo para que una web funcione o para medir su uso.</p>
+
+  <h2>2. Cuáles usamos</h2>
+  <p>Las cookies de analítica y de publicidad no se cargan hasta que las aceptas en el aviso de cookies.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Nombre</th><th>Tipo y titular</th><th>Para qué</th><th>Duración</th></tr></thead>
+      <tbody>
+        <tr><td>fv_consent</td><td>Técnica, propia (almacenamiento local)</td><td>Recordar tu elección sobre cookies</td><td>Hasta que la borres</td></tr>
+        <tr><td>fv_attribution, fv_tracked_*</td><td>Publicidad y analítica, propia (almacenamiento de sesión)</td><td>Recordar la campaña de origen y no contar dos veces una compra</td><td>Hasta cerrar el navegador</td></tr>
+        <tr><td>_ga, _ga_*</td><td>Analítica, Google Analytics</td><td>Contar visitas y ver qué páginas se usan</td><td>Hasta 2 años</td></tr>
+        <tr><td>_gcl_au y similares</td><td>Publicidad, Google Ads</td><td>Saber qué anuncios traen pedidos</td><td>Hasta 90 días</td></tr>
+        <tr><td>[NOMBRE DE LA COOKIE DEL OPENAI PIXEL]</td><td>Publicidad, OpenAI (ChatGPT Ads)</td><td>Saber qué anuncios de ChatGPT traen pedidos</td><td>[DURACIÓN]</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Al pagar, Stripe usa sus propias cookies en su página de pago. Puedes consultarlas en la política de privacidad de Stripe.</p>
+
+  <h2>3. Cómo cambiar tu elección</h2>
+  <p>Puedes cambiar o retirar tu consentimiento en cualquier momento desde el enlace «Configurar cookies» del pie de página. También puedes borrar las cookies desde la configuración de tu navegador.</p>
+
+  <h2>4. Más información</h2>
+  <p>Para cualquier duda, escríbenos a [EMAIL DE CONTACTO]. El tratamiento de tus datos se explica en la <a href="/privacidad">política de privacidad</a>.</p>
+</Legal>

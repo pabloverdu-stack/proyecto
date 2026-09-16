@@ -1,0 +1,39 @@
+{
+  "name": "Soporte NFC de reseñas de Google para mostrador",
+  "listName": "Soporte NFC de mostrador",
+  "unit": { "singular": "soporte", "plural": "soportes", "gender": "m" },
+  "order": 2,
+  "featured": false,
+  "status": "active",
+  "productType": "google_review",
+  "visual": "stand",
+  "headline": "Tu mostrador, listo para recibir reseñas en Google",
+  "subheadline": "Un soporte de pie junto a la caja: tus clientes acercan el móvil y se abre la ventana para dejarte su reseña.",
+  "seo": {
+    "title": "Soporte NFC de reseñas de Google",
+    "description": "Soporte de mostrador con NFC y QR: tus clientes acercan el móvil y te dejan su reseña en Google, sin apps. Envío gratis en 48 h a la península."
+  },
+  "packs": [
+    { "id": "1", "units": 1, "priceCents": 3900, "stripeLookupKey": "soporte_pack_1", "recommended": true }
+  ],
+  "provisionalPrice": true,
+  "includes": [
+    "Soporte de pie para dejar a la vista en el mostrador.",
+    "Chip NFC programado con el enlace de reseña de tu negocio.",
+    "Código QR impreso para los móviles sin NFC.",
+    "Bloqueado contra escritura: nadie puede cambiarle el enlace.",
+    "Sin batería, sin app y sin cuotas.",
+    "Cambio de enlace gratis si te mudas o cambias de ficha."
+  ],
+  "specs": [
+    { "label": "Formato", "value": "Soporte de mostrador" },
+    { "label": "Tecnología", "value": "NFC y código QR" },
+    { "label": "Compatibilidad", "value": "iPhone y Android con NFC; QR para el resto" }
+  ],
+  "crossSell": {
+    "slug": "tarjeta-nfc-resenas-google",
+    "text": "¿Prefieres llevarla encima? Mira la tarjeta",
+    "title": "Para llevar encima, la tarjeta",
+    "body": "La misma tecnología en formato tarjeta: cabe en la cartera y la sacas al terminar cada servicio."
+  }
+}

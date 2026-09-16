@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Página no encontrada" description="Esta página no existe." path="/404" noindex>
+  <section class="container not-found" aria-labelledby="error-titulo">
+    <h1 class="h1" id="error-titulo">Esta página no existe</h1>
+    <p class="lead">Puede que el enlace esté mal escrito o que la página se haya movido.</p>
+    <p><a class="link" href="/">Ir a la tarjeta NFC de reseñas</a></p>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+    padding-block: var(--space-16) var(--section-gap);
+  }
+</style>

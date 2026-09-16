@@ -1,0 +1,69 @@
+---
+// URL grabada en el chip NFC y en el QR de cada tarjeta. Redirige al destino guardado en la base de datos,
+// así que el enlace se puede cambiar sin tocar la tarjeta física.
+import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
+import { CODE_PATTERN } from '../../lib/codes';
+import { getStore } from '../../lib/store';
+
+export const prerender = false;
+
+const code = Astro.params.codigo ?? '';
+const store = getStore();
+let unavailable = !store;
+
+if (store && CODE_PATTERN.test(code)) {
+  try {
+    const card = await store.findCard(code);
+    if (card?.active) {
+      const tap = store.recordTap(code);
+      const ctx = (Astro.locals as { cfContext?: { waitUntil(promise: Promise<unknown>): void } }).cfContext;
+      if (ctx) ctx.waitUntil(tap);
+      else await tap;
+      return new Response(null, {
+        status: 302,
+        headers: { Location: card.destinationUrl, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' },
+      });
+    }
+  } catch (error) {
+    console.error('[tarjeta]', error instanceof Error ? error.message : error);
+    unavailable = true;
+  }
+}
+
+Astro.response.status = unavailable ? 503 : 404;
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<Base
+  title={unavailable ? 'Tarjeta no disponible ahora mismo' : 'Esta tarjeta no está activa'}
+  description="Estado de una tarjeta NFC de reseñas."
+  path={`/t/${code}`}
+  noindex
+>
+  <section class="container card-status" aria-labelledby="tarjeta-titulo">
+    {
+      unavailable ? (
+        <>
+          <h1 class="h1" id="tarjeta-titulo">No podemos abrir la reseña ahora mismo</h1>
+          <p class="lead">Es un problema temporal. Vuelve a acercar el móvil en unos minutos.</p>
+        </>
+      ) : (
+        <>
+          <h1 class="h1" id="tarjeta-titulo">Esta tarjeta no está activa</h1>
+          <p class="lead">Puede que el negocio la haya cambiado por una nueva. Si eres el dueño, escríbenos y la activamos.</p>
+        </>
+      )
+    }
+    <p><a class="link" href={`mailto:${site.email}`}>{site.email}</a></p>
+  </section>
+</Base>
+
+<style>
+  .card-status {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 40rem;
+    padding-block: var(--space-16) var(--section-gap);
+  }
+</style>

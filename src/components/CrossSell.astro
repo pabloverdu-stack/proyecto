@@ -1,0 +1,57 @@
+---
+import Scene from './Scene.astro';
+import { site, formatEuros } from '../config/site';
+import { fromPrice, type Product } from '../lib/products';
+
+interface Props {
+  target: Product;
+  href: string;
+  title: string;
+  body: string;
+}
+
+const { target, href, title, body } = Astro.props;
+---
+
+<section class="section" aria-labelledby="cruzada-titulo">
+  <div class="container cross">
+    <Scene variant={target.data.visual} state="idle" brand={site.name.toLowerCase()} label={target.data.name} class="cross-scene" />
+    <div class="cross-text">
+      <h2 class="h2" id="cruzada-titulo">{title}</h2>
+      <p class="lead">{body}</p>
+      <p class="price">Desde {formatEuros(fromPrice(target))}</p>
+      <p><a class="link" href={href}>Ver {target.data.unit.gender === 'f' ? 'la' : 'el'} {target.data.unit.singular}</a></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cross {
+    display: grid;
+    gap: var(--space-8);
+    align-items: center;
+  }
+
+  .cross :global(.cross-scene) {
+    border-radius: var(--radius-lg);
+    max-width: 32rem;
+  }
+
+  .cross-text {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .price {
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 960px) {
+    .cross {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: var(--space-16);
+    }
+  }
+</style>

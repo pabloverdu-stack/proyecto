@@ -1,0 +1,87 @@
+---
+import type { FaqItem } from '../content/faq';
+
+interface Props {
+  items: FaqItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="section" id="preguntas" aria-labelledby="preguntas-titulo">
+  <div class="container faq">
+    <div class="section-intro">
+      <h2 class="h2" id="preguntas-titulo">Preguntas frecuentes</h2>
+      <p class="muted">¿Tienes otra duda? Escríbenos y te respondemos.</p>
+    </div>
+    <div class="faq-list">
+      {
+        items.map((item) => (
+          <details>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .faq-list {
+    border-top: var(--border-hair);
+  }
+
+  details {
+    border-bottom: var(--border-hair);
+  }
+
+  summary {
+    position: relative;
+    display: block;
+    padding: var(--space-4) var(--space-10) var(--space-4) 0;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: var(--space-2);
+    width: 0.6rem;
+    height: 0.6rem;
+    border-right: 2px solid var(--color-tinta);
+    border-bottom: 2px solid var(--color-tinta);
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform var(--duration);
+  }
+
+  details[open] summary::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+
+  details p {
+    max-width: var(--measure);
+    padding-bottom: var(--space-5);
+    color: var(--color-grafito);
+  }
+
+  @media (min-width: 960px) {
+    .faq {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+  }
+</style>

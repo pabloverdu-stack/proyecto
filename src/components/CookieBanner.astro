@@ -1,0 +1,173 @@
+---
+// Solo se muestra si hay alguna etiqueta de medición configurada en .env.
+---
+
+<div class="cookie-banner" data-cookie-banner hidden>
+  <section class="cookie-inner container" aria-labelledby="cookies-titulo">
+    <h2 id="cookies-titulo" class="visually-hidden">Aviso de cookies</h2>
+    <p class="cookie-text">
+      Usamos cookies de analítica y de publicidad para saber qué funciona, solo si nos das permiso.
+      <a href="/cookies">Más información</a>
+    </p>
+    <div class="cookie-actions">
+      <button type="button" class="btn-plain" data-consent-choice="reject">Rechazar</button>
+      <button type="button" class="btn-plain" data-consent-choice="accept">Aceptar</button>
+      <button type="button" class="cookie-configure" data-consent-choice="configure" aria-expanded="false" aria-controls="cookie-prefs">Configurar</button>
+    </div>
+    <form class="cookie-prefs" id="cookie-prefs" data-consent-prefs hidden>
+      <fieldset>
+        <legend>Elige qué cookies aceptas</legend>
+        <label><input type="checkbox" checked disabled /> <span><strong>Necesarias.</strong> Recuerdan tu elección. Siempre activas.</span></label>
+        <label><input type="checkbox" name="analytics" /> <span><strong>Analítica.</strong> Cuántas personas visitan la web y qué páginas ven.</span></label>
+        <label><input type="checkbox" name="marketing" /> <span><strong>Publicidad.</strong> Saber qué anuncios de Google o ChatGPT traen pedidos.</span></label>
+      </fieldset>
+      <button type="submit" class="btn-plain">Guardar mi elección</button>
+    </form>
+  </section>
+</div>
+
+<script>
+  import { readConsent, saveConsent } from '../scripts/consent';
+
+  const banner = document.querySelector<HTMLElement>('[data-cookie-banner]');
+  const prefs = document.querySelector<HTMLFormElement>('[data-consent-prefs]');
+  const configure = document.querySelector<HTMLButtonElement>('[data-consent-choice="configure"]');
+
+  function open(showPrefs: boolean) {
+    if (!banner || !prefs || !configure) return;
+    const current = readConsent();
+    (prefs.elements.namedItem('analytics') as HTMLInputElement).checked = current?.analytics ?? false;
+    (prefs.elements.namedItem('marketing') as HTMLInputElement).checked = current?.marketing ?? false;
+    prefs.hidden = !showPrefs;
+    configure.setAttribute('aria-expanded', String(showPrefs));
+    banner.hidden = false;
+  }
+
+  function close() {
+    if (banner) banner.hidden = true;
+  }
+
+  if (banner && prefs && configure) {
+    if (!readConsent()) open(false);
+
+    banner.querySelectorAll<HTMLButtonElement>('[data-consent-choice]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const choice = button.dataset.consentChoice;
+        if (choice === 'configure') return open(prefs.hidden === true);
+        saveConsent({ analytics: choice === 'accept', marketing: choice === 'accept' });
+        close();
+      });
+    });
+
+    prefs.addEventListener('submit', (event) => {
+      event.preventDefault();
+      saveConsent({
+        analytics: (prefs.elements.namedItem('analytics') as HTMLInputElement).checked,
+        marketing: (prefs.elements.namedItem('marketing') as HTMLInputElement).checked,
+      });
+      close();
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-open-cookie-settings]').forEach((trigger) => {
+      trigger.hidden = false;
+      trigger.addEventListener('click', () => open(true));
+    });
+  }
+</script>
+
+<script>
+  import '../scripts/analytics';
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    background: var(--color-blanco);
+    border-top: 1px solid var(--color-grafito);
+    padding-block: var(--space-4);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .cookie-inner {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .cookie-text {
+    font-size: var(--text-sm);
+    max-width: var(--measure);
+  }
+
+  .cookie-text a {
+    font-weight: var(--weight-semibold);
+  }
+
+  .cookie-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .cookie-actions .btn-plain {
+    min-width: 7.5rem;
+  }
+
+  .cookie-configure {
+    min-height: 2.75rem;
+    padding: 0 var(--space-2);
+    border: 0;
+    background: none;
+    font-weight: var(--weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  .cookie-prefs {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .cookie-prefs fieldset {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .cookie-prefs legend {
+    margin-bottom: var(--space-2);
+    font-weight: var(--weight-semibold);
+  }
+
+  .cookie-prefs label {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    font-size: var(--text-sm);
+  }
+
+  .cookie-prefs input {
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.15rem;
+    accent-color: var(--color-tinta);
+  }
+
+  @media (min-width: 960px) {
+    .cookie-inner {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+
+    .cookie-prefs {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

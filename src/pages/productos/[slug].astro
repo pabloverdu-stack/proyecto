@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ProductPage from '../../components/ProductPage.astro';
+import { getActiveProducts, type Product } from '../../lib/products';
+
+// El producto destacado vive en la portada, así que aquí solo se generan los demás.
+export const getStaticPaths = (async () => {
+  const products = await getActiveProducts();
+  return products.filter((p) => !p.data.featured).map((product) => ({ params: { slug: product.id }, props: { product } }));
+}) satisfies GetStaticPaths;
+
+const { product } = Astro.props as { product: Product };
+---
+
+<ProductPage product={product} />
